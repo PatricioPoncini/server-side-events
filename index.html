@@ -1,26 +1,137 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Resource Monitor</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f0f4f8;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+      }
+
+      .monitor-container {
+        background-color: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        padding: 25px;
+        max-width: 400px;
+        text-align: center;
+      }
+
+      .monitor-title {
+        font-size: 2em;
+        margin-bottom: 20px;
+        color: #333;
+        font-weight: bold;
+      }
+
+      .resource-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+      }
+
+      .resource-item {
+        background-color: #f9f9f9;
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .label {
+        font-size: 1.1em;
+        font-weight: bold;
+        color: #555;
+        display: block;
+        margin-bottom: 8px;
+      }
+
+      .value {
+        font-size: 1.4em;
+        color: #0073e6;
+        font-weight: bold;
+      }
+    </style>
+  </head>
   <body>
-    Mem: <span id="mem"></span><br />
-    CPU: <span id="cpu"></span>
+    <div class="monitor-container">
+      <div class="monitor-title">Resource Monitor</div>
+      <div class="resource-grid">
+        <div class="resource-item">
+          <span class="label">Memory Total:</span>
+          <span id="memTotal" class="value">-</span>
+        </div>
+        <div class="resource-item">
+          <span class="label">Memory Used:</span>
+          <span id="memUsed" class="value">-</span>
+        </div>
+        <div class="resource-item">
+          <span class="label">Memory Percent:</span>
+          <span id="memPerc" class="value">-</span>
+        </div>
+        <div class="resource-item">
+          <span class="label">CPU User:</span>
+          <span id="cpuUser" class="value">-</span>
+        </div>
+        <div class="resource-item">
+          <span class="label">CPU System:</span>
+          <span id="cpuSys" class="value">-</span>
+        </div>
+        <div class="resource-item">
+          <span class="label">CPU Idle:</span>
+          <span id="cpuIdle" class="value">-</span>
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript">
+      const eventSrc = new EventSource("http://127.0.0.1:8080/events");
+
+      const memTotal = document.getElementById("memTotal");
+      const memUsed = document.getElementById("memUsed");
+      const memPerc = document.getElementById("memPerc");
+      const cpuUser = document.getElementById("cpuUser");
+      const cpuSys = document.getElementById("cpuSys");
+      const cpuIdle = document.getElementById("cpuIdle");
+
+      eventSrc.addEventListener("memTotal", (event) => {
+        memTotal.textContent = event.data;
+      });
+
+      eventSrc.addEventListener("memUsed", (event) => {
+        memUsed.textContent = event.data;
+      });
+
+      eventSrc.addEventListener("memPerc", (event) => {
+        memPerc.textContent = event.data + "%";
+      });
+
+      eventSrc.addEventListener("cpuUser", (event) => {
+        cpuUser.textContent = event.data;
+      });
+
+      eventSrc.addEventListener("cpuSys", (event) => {
+        cpuSys.textContent = event.data;
+      });
+
+      eventSrc.addEventListener("cpuIdle", (event) => {
+        cpuIdle.textContent = event.data;
+      });
+
+      eventSrc.onerror = (err) => {
+        console.log("SSE error: ", err);
+      };
+    </script>
   </body>
-
-  <script type="text/javascript">
-    const eventSrc = new EventSource("http://127.0.0.1:8080/events");
-
-    const mem = document.getElementById("mem");
-    const cpu = document.getElementById("cpu");
-
-    eventSrc.addEventListener("mem", (event) => {
-      mem.textContent = event.data;
-    });
-
-    eventSrc.addEventListener("cpu", (event) => {
-      cpu.textContent = event.data;
-    });
-
-    eventSrc.onerror = (err) => {
-      console.log("SSE error: ", err);
-    };
-  </script>
 </html>
