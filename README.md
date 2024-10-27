@@ -42,3 +42,7 @@ go run .
 - [MDN Web Docs: Using Server-Sent Events](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events)
 - [YouTube: Server-Sent Events Tutorial](https://www.youtube.com/watch?v=nvijc5J-JAQ)
 - [W3Schools: Server-Sent Events](https://www.w3schools.com/html/html5_serversentevents.asp)
+
+## `Demo Video`
+
+Check out the demonstration of how this project works: [Watch the video](https://github.com/user-attachments/assets/9968c58d-966a-4f32-b472-a4de53217613)
