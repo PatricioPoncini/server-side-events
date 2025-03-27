@@ -1,96 +1,132 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Resource Monitor</title>
-    <style>
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Resource Monitor (SSE in Go)</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-      body {
-        font-family: Arial, sans-serif;
-        background-color: #f0f4f8;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 100vh;
-      }
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f4f8;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
 
-      .monitor-container {
-        background-color: #ffffff;
-        border-radius: 12px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        padding: 25px;
-        max-width: 400px;
-        text-align: center;
-      }
+    .container {
+      max-width: 450px;
+      text-align: center;
+    }
 
-      .monitor-title {
-        font-size: 2em;
-        margin-bottom: 20px;
-        color: #333;
-        font-weight: bold;
-      }
+    .intro {
+      background-color: #ffffff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+      margin-bottom: 20px;
+    }
 
-      .resource-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 15px;
-      }
+    .intro h2 {
+      font-size: 1.5em;
+      color: #333;
+    }
 
-      .resource-item {
-        background-color: #f9f9f9;
-        padding: 15px;
-        border-radius: 8px;
-        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
-      }
+    .intro p {
+      font-size: 1em;
+      color: #555;
+      margin-top: 10px;
+      line-height: 1.5;
+    }
 
-      .label {
-        font-size: 1.1em;
-        font-weight: bold;
-        color: #555;
-        display: block;
-        margin-bottom: 8px;
-      }
+    .monitor-container {
+      background-color: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      padding: 25px;
+      text-align: center;
+    }
 
-      .value {
-        font-size: 1.4em;
-        color: #0073e6;
-        font-weight: bold;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="monitor-container">
-      <div class="monitor-title">Resource Monitor</div>
-      <div class="resource-grid">
-        <div class="resource-item">
-          <span class="label">Memory Total:</span>
-          <span id="memTotal" class="value">-</span>
-        </div>
-        <div class="resource-item">
-          <span class="label">Memory Used:</span>
-          <span id="memUsed" class="value">-</span>
-        </div>
-        <div class="resource-item">
-          <span class="label">Memory Percent:</span>
-          <span id="memPerc" class="value">-</span>
-        </div>
-        <div class="resource-item">
-          <span class="label">CPU User:</span>
-          <span id="cpuUser" class="value">-</span>
-        </div>
-        <div class="resource-item">
-          <span class="label">CPU System:</span>
-          <span id="cpuSys" class="value">-</span>
-        </div>
-        <div class="resource-item">
-          <span class="label">CPU Idle:</span>
-          <span id="cpuIdle" class="value">-</span>
+    .monitor-title {
+      font-size: 1.8em;
+      margin-bottom: 20px;
+      color: #0073e6;
+      font-weight: bold;
+    }
+
+    .resource-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+    }
+
+    .resource-item {
+      background-color: #f9f9f9;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .label {
+      font-size: 1em;
+      font-weight: bold;
+      color: #555;
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .value {
+      font-size: 1.3em;
+      color: #0073e6;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+    <div class="container">
+      <div class="intro">
+        <h2>Server-Sent Events (SSE) in Go</h2>
+        <p>
+          This is a simple example demonstrating how Server-Sent Events (SSE)
+          work in Go. The server continuously streams real-time resource usage
+          (CPU & memory) updates to the client.
+        </p>
+      </div>
+
+      <div class="monitor-container">
+        <div class="monitor-title">Resource Monitor</div>
+        <div class="resource-grid">
+          <div class="resource-item">
+            <span class="label">Memory Total:</span>
+            <span id="memTotal" class="value">-</span> GB
+          </div>
+          <div class="resource-item">
+            <span class="label">Memory Used:</span>
+            <span id="memUsed" class="value">-</span> GB
+          </div>
+          <div class="resource-item">
+            <span class="label">Memory Usage:</span>
+            <span id="memPerc" class="value">-</span> %
+          </div>
+          <div class="resource-item">
+            <span class="label">CPU User:</span>
+            <span id="cpuUser" class="value">-</span> %
+          </div>
+          <div class="resource-item">
+            <span class="label">CPU System:</span>
+            <span id="cpuSys" class="value">-</span> %
+          </div>
+          <div class="resource-item">
+            <span class="label">CPU Idle:</span>
+            <span id="cpuIdle" class="value">-</span> %
+          </div>
         </div>
       </div>
     </div>
@@ -98,35 +134,36 @@
     <script type="text/javascript">
       const eventSrc = new EventSource("http://127.0.0.1:8080/events");
 
-      const memTotal = document.getElementById("memTotal");
-      const memUsed = document.getElementById("memUsed");
-      const memPerc = document.getElementById("memPerc");
-      const cpuUser = document.getElementById("cpuUser");
-      const cpuSys = document.getElementById("cpuSys");
-      const cpuIdle = document.getElementById("cpuIdle");
+      function formatGB(value) {
+        return (value / (1024 ** 3)).toFixed(2);
+      }
+
+      function formatPercent(value) {
+        return parseFloat(value).toFixed(2);
+      }
 
       eventSrc.addEventListener("memTotal", (event) => {
-        memTotal.textContent = event.data;
+        document.getElementById("memTotal").textContent = formatGB(event.data);
       });
 
       eventSrc.addEventListener("memUsed", (event) => {
-        memUsed.textContent = event.data;
+        document.getElementById("memUsed").textContent = formatGB(event.data);
       });
 
       eventSrc.addEventListener("memPerc", (event) => {
-        memPerc.textContent = event.data;
+        document.getElementById("memPerc").textContent = formatPercent(event.data);
       });
 
       eventSrc.addEventListener("cpuUser", (event) => {
-        cpuUser.textContent = event.data;
+        document.getElementById("cpuUser").textContent = formatPercent(event.data);
       });
 
       eventSrc.addEventListener("cpuSys", (event) => {
-        cpuSys.textContent = event.data;
+        document.getElementById("cpuSys").textContent = formatPercent(event.data);
       });
 
       eventSrc.addEventListener("cpuIdle", (event) => {
-        cpuIdle.textContent = event.data;
+        document.getElementById("cpuIdle").textContent = formatPercent(event.data);
       });
 
       eventSrc.onerror = (err) => {
