@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
@@ -33,13 +34,32 @@ func colorLog(level, message string) {
 }
 
 func main() {
+	fs := http.FileServer(http.Dir("."))
+	http.Handle("/", fs)
+
 	http.HandleFunc("/events", sseHandler)
+
+	http.HandleFunc("/ping", pingHandler)
 
 	colorLog("INFO", "Server started and listening on port :8080")
 
 	if err := http.ListenAndServe(":8080", nil); err != nil {
 		colorLog("ERROR", fmt.Sprintf("unable to start server: %s", err.Error()))
 	}
+}
+
+func WriteJSONResponse(w http.ResponseWriter, status int, v any) error {
+	w.Header().Add("Content-Type", "application/json")
+	w.WriteHeader(status)
+
+	return json.NewEncoder(w).Encode(v)
+}
+
+func pingHandler(w http.ResponseWriter, r *http.Request) {
+	response := map[string]any{
+		"message": "pong",
+	}
+	WriteJSONResponse(w, http.StatusOK, response)
 }
 
 func sseHandler(w http.ResponseWriter, r *http.Request) {
