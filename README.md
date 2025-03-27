@@ -6,6 +6,10 @@ This project demonstrates the use of **Server-Sent Events (SSE)** with a Go serv
 
 In this mini project, I explored the capabilities of SSE to push updates from the server to the client without requiring the client to make repeated requests. This enables efficient real-time data delivery for applications such as notifications, live updates, or dashboards.
 
+## `Demo`
+
+Check out the demonstration [here](https://server-side-events.onrender.com/)
+
 ## `Technologies Used`
 
 [![Stack](https://skillicons.dev/icons?i=go,js,html,css)](https://skillicons.dev)
@@ -42,7 +46,3 @@ go run .
 - [MDN Web Docs: Using Server-Sent Events](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events)
 - [YouTube: Server-Sent Events Tutorial](https://www.youtube.com/watch?v=nvijc5J-JAQ)
 - [W3Schools: Server-Sent Events](https://www.w3schools.com/html/html5_serversentevents.asp)
-
-## `Demo`
-
-Check out the demonstration [here](https://server-side-events.onrender.com/)
