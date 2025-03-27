@@ -43,6 +43,6 @@ go run .
 - [YouTube: Server-Sent Events Tutorial](https://www.youtube.com/watch?v=nvijc5J-JAQ)
 - [W3Schools: Server-Sent Events](https://www.w3schools.com/html/html5_serversentevents.asp)
 
-## `Demo Video`
+## `Demo`
 
-Check out the demonstration of how this project works: [Watch the video](https://github.com/user-attachments/assets/9968c58d-966a-4f32-b472-a4de53217613)
+Check out the demonstration [here](https://server-side-events.onrender.com/)
